@@ -94,8 +94,8 @@ Agents are black boxes. As they handle real stakes, that opacity becomes unaccep
 
 ## Status
 
-- [ ] SPEC.md written (this file)
-- [ ] Stephen approves domain name
-- [ ] Website built (index.html)
-- [ ] Hosted live
-- [ ] Cron job configured
+- [x] SPEC.md written (this file)
+- [x] Stephen approves domain name ✅ (greybox.fyi, Mar 21 2026)
+- [x] Website built (index.html)
+- [ ] Hosted live (DNS pointing)
+- [x] Cron job configured (8AM/12PM/4PM/8PM ET)
