@@ -3,8 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GreyBox — See Inside the Agent Box</title>
-  <meta name="description" content="Audit trail, decision log, and explanation layer for AI agents. Know what they did and why.">
+  <title>Agent Audit Trail — Your agents made a decision. Can you explain it?</title>
+  <meta name="description" content="Full visibility into what your AI agents did, why, and what they saw. Accountability infrastructure for the age of AI agents.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -19,8 +22,6 @@
       --accent-dim: rgba(0, 212, 170, 0.12);
       --accent2: #7c6bff;
       --red: #ff6b6b;
-      --yellow: #ffd93d;
-      --code-bg: #0d0d18;
     }
 
     html { scroll-behavior: smooth; }
@@ -49,654 +50,892 @@
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
     }
+
     .logo {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: 700;
-      letter-spacing: -0.02em;
       color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    .logo span { color: var(--accent); }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-icon svg { width: 18px; height: 18px; }
+
     nav ul {
       display: flex;
-      gap: 28px;
       list-style: none;
+      gap: 32px;
+      align-items: center;
     }
+
     nav ul li a {
       color: var(--muted);
       font-size: 0.9rem;
+      font-weight: 500;
       transition: color 0.2s;
     }
+
     nav ul li a:hover { color: var(--text); text-decoration: none; }
+
+    .nav-cta {
+      background: var(--accent) !important;
+      color: var(--bg) !important;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-weight: 600 !important;
+      transition: opacity 0.2s !important;
+    }
+
+    .nav-cta:hover { opacity: 0.85; text-decoration: none !important; }
 
     /* HERO */
     .hero {
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
       padding: 120px 24px 80px;
       position: relative;
+      overflow: hidden;
     }
+
     .hero::before {
       content: '';
       position: absolute;
-      top: -200px; left: 50%;
+      top: -50%;
+      left: 50%;
       transform: translateX(-50%);
-      width: 600px; height: 600px;
-      background: radial-gradient(ellipse, rgba(0, 212, 170, 0.08) 0%, transparent 70%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(0, 212, 170, 0.06) 0%, transparent 70%);
       pointer-events: none;
     }
+
     .hero-badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 6px 14px;
       background: var(--accent-dim);
       border: 1px solid rgba(0, 212, 170, 0.3);
+      color: var(--accent);
+      padding: 6px 14px;
       border-radius: 100px;
       font-size: 0.8rem;
-      color: var(--accent);
-      margin-bottom: 28px;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 32px;
+      letter-spacing: 0.02em;
     }
-    .hero-badge .dot {
-      width: 6px; height: 6px;
+
+    .hero-badge span {
+      width: 6px;
+      height: 6px;
       background: var(--accent);
       border-radius: 50%;
       animation: pulse 2s infinite;
     }
+
     @keyframes pulse {
       0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
+      50% { opacity: 0.4; }
     }
+
     .hero h1 {
-      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
       font-weight: 700;
-      letter-spacing: -0.04em;
-      line-height: 1.05;
-      margin-bottom: 20px;
-      max-width: 800px;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      max-width: 820px;
     }
-    .hero h1 .line-accent {
-      display: block;
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
+
+    .hero h1 .accent { color: var(--accent); }
+
     .hero p {
-      font-size: 1.15rem;
+      font-size: 1.2rem;
       color: var(--muted);
-      max-width: 540px;
-      margin-bottom: 40px;
+      max-width: 560px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
     }
+
     .hero-actions {
       display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
+      gap: 16px;
       justify-content: center;
+      flex-wrap: wrap;
     }
+
     .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 28px;
       background: var(--accent);
-      color: #000;
-      font-weight: 600;
-      font-size: 0.95rem;
+      color: var(--bg);
+      padding: 14px 32px;
       border-radius: 8px;
+      font-weight: 700;
+      font-size: 1rem;
       border: none;
       cursor: pointer;
-      transition: opacity 0.2s, transform 0.2s;
-    }
-    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); text-decoration: none; }
-    .btn-secondary {
+      transition: opacity 0.2s;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 12px 28px;
+    }
+
+    .btn-primary:hover { opacity: 0.85; text-decoration: none; }
+
+    .btn-secondary {
       background: transparent;
       color: var(--text);
-      font-weight: 500;
-      font-size: 0.95rem;
+      padding: 14px 32px;
       border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
       border: 1px solid var(--border);
       cursor: pointer;
       transition: border-color 0.2s, background 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
-    .btn-secondary:hover { border-color: var(--muted); background: var(--surface); text-decoration: none; }
 
-    /* SECTIONS */
-    section { padding: 100px 24px; }
-    .container { max-width: 1060px; margin: 0 auto; }
-    .section-label {
-      display: inline-block;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--accent);
-      margin-bottom: 14px;
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+      text-decoration: none;
     }
-    .section-title {
-      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--muted);
+      font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* SECTION COMMON */
+    section {
+      padding: 100px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.75rem;
       font-weight: 700;
-      letter-spacing: -0.03em;
-      line-height: 1.15;
+      color: var(--accent);
       margin-bottom: 16px;
     }
-    .section-desc {
+
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .section-subtitle {
       color: var(--muted);
-      font-size: 1.05rem;
-      max-width: 560px;
+      font-size: 1.1rem;
+      max-width: 600px;
       margin-bottom: 56px;
     }
 
-    /* PROBLEM */
-    .problem-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-      margin-bottom: 60px;
-    }
-    .problem-card {
-      padding: 28px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      transition: border-color 0.2s;
-    }
-    .problem-card:hover { border-color: var(--accent); }
-    .problem-icon {
-      font-size: 2rem;
-      margin-bottom: 14px;
-    }
-    .problem-card h3 {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-    .problem-card p {
-      color: var(--muted);
-      font-size: 0.9rem;
-      line-height: 1.55;
-    }
-    .problem-stats {
-      display: flex;
-      gap: 40px;
-      flex-wrap: wrap;
-      padding: 32px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      border-left: 3px solid var(--red);
-    }
-    .problem-stats .stat-num {
-      font-size: 2.2rem;
-      font-weight: 700;
-      color: var(--red);
-    }
-    .problem-stats .stat-label {
-      font-size: 0.85rem;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-
-    /* SOLUTION */
-    .solution { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-    .solution-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-    }
-    .solution-card {
-      padding: 28px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-    }
-    .solution-num {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 32px; height: 32px;
-      background: var(--accent-dim);
-      border: 1px solid rgba(0, 212, 170, 0.3);
-      border-radius: 8px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--accent);
-      margin-bottom: 16px;
-    }
-    .solution-card h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 10px; }
-    .solution-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
-
-    /* DEMO */
-    .demo-window {
-      background: var(--code-bg);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      overflow: hidden;
-      max-width: 820px;
-    }
-    .demo-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 16px;
-      background: var(--surface2);
+    /* LOGOS */
+    .logos {
+      padding: 60px 24px;
+      text-align: center;
+      border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
     }
-    .demo-bar .dot-red { width: 12px; height: 12px; background: var(--red); border-radius: 50%; }
-    .demo-bar .dot-yellow { width: 12px; height: 12px; background: var(--yellow); border-radius: 50%; }
-    .demo-bar .dot-green { width: 12px; height: 12px; background: #51cf66; border-radius: 50%; }
-    .demo-bar .demo-title {
-      margin-left: 10px;
-      font-size: 0.78rem;
+
+    .logos p {
       color: var(--muted);
-      font-family: 'Fira Code', 'Courier New', monospace;
+      font-size: 0.85rem;
+      margin-bottom: 32px;
+      letter-spacing: 0.05em;
     }
-    .demo-body {
-      padding: 24px 28px;
-      font-family: 'Fira Code', 'Courier New', monospace;
-      font-size: 0.8rem;
-      line-height: 1.8;
-      overflow-x: auto;
+
+    .logo-row {
+      display: flex;
+      gap: 48px;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
     }
-    .demo-line { display: flex; gap: 12px; margin-bottom: 2px; }
-    .demo-linenum { color: var(--muted); min-width: 20px; text-align: right; user-select: none; opacity: 0.4; }
-    .demo-keyword { color: var(--accent2); }
-    .demo-string { color: #98c379; }
-    .demo-comment { color: var(--muted); font-style: italic; }
-    .demo-variable { color: var(--accent); }
-    .demo-value { color: #e5c07b; }
-    .demo-success { color: #51cf66; }
-    .demo-warning { color: var(--yellow); }
-    .demo-divider { color: var(--border); margin: 8px 0; }
-    .demo-tag {
-      display: inline-block;
-      padding: 1px 7px;
-      border-radius: 4px;
-      font-size: 0.72rem;
+
+    .logo-item {
+      color: var(--muted);
       font-weight: 600;
+      font-size: 1.1rem;
+      opacity: 0.5;
     }
-    .tag-approve { background: rgba(81, 207, 102, 0.15); color: #51cf66; }
-    .tag-deny { background: rgba(255, 107, 107, 0.15); color: var(--red); }
-    .tag-info { background: var(--accent-dim); color: var(--accent); }
-    .tag-query { background: rgba(124, 107, 255, 0.15); color: var(--accent2); }
+
+    /* FEATURES */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      transition: border-color 0.2s;
+    }
+
+    .feature-card:hover { border-color: rgba(0, 212, 170, 0.4); }
+
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--accent-dim);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .feature-icon svg { width: 22px; height: 22px; stroke: var(--accent); }
+
+    .feature-card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .feature-card p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
 
     /* HOW IT WORKS */
+    #how-it-works {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 80px 48px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
     .steps {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 32px;
+      gap: 40px;
+      margin-top: 48px;
+    }
+
+    .step {
       position: relative;
     }
-    .step { text-align: center; padding: 0 12px; }
-    .step-icon {
-      width: 64px; height: 64px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.6rem;
-      margin: 0 auto 18px;
-    }
-    .step h3 { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
-    .step p { color: var(--muted); font-size: 0.88rem; }
-    .step-num {
-      display: inline-block;
-      font-size: 0.72rem;
+
+    .step-number {
+      font-size: 3rem;
       font-weight: 700;
       color: var(--accent);
-      background: var(--accent-dim);
-      padding: 2px 8px;
-      border-radius: 100px;
+      opacity: 0.25;
+      line-height: 1;
+      margin-bottom: 16px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .step h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
       margin-bottom: 10px;
     }
 
-    /* CTA / WAITLIST */
-    .cta-section {
-      background: linear-gradient(180deg, var(--bg) 0%, var(--surface) 100%);
-      border-top: 1px solid var(--border);
-      text-align: center;
+    .step p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.65;
     }
-    .cta-section .section-desc { margin: 0 auto 36px; }
+
+    /* PAIN */
+    .pain-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    @media (max-width: 700px) {
+      .pain-grid { grid-template-columns: 1fr; }
+    }
+
+    .pain-col {
+      padding: 40px;
+    }
+
+    .pain-col.no {
+      background: rgba(255, 107, 107, 0.06);
+      border-right: 1px solid var(--border);
+    }
+
+    .pain-col.yes {
+      background: rgba(0, 212, 170, 0.06);
+    }
+
+    @media (max-width: 700px) {
+      .pain-col { padding: 28px; }
+      .pain-col.no { border-right: none; border-bottom: 1px solid var(--border); }
+    }
+
+    .pain-col h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pain-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .pain-col ul li {
+      font-size: 0.95rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: var(--muted);
+    }
+
+    .pain-col.yes ul li { color: var(--text); }
+
+    .pain-col ul li svg {
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* WAITLIST */
+    #waitlist {
+      text-align: center;
+      padding: 100px 24px;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    #waitlist .section-title { max-width: 560px; margin: 0 auto 16px; }
+
     .waitlist-form {
       display: flex;
-      gap: 10px;
-      max-width: 460px;
-      margin: 0 auto;
+      gap: 12px;
+      max-width: 480px;
+      margin: 40px auto 0;
       flex-wrap: wrap;
       justify-content: center;
     }
-    .waitlist-form input {
+
+    .waitlist-form input[type="email"] {
       flex: 1;
       min-width: 220px;
-      padding: 12px 16px;
-      background: var(--bg);
+      padding: 14px 18px;
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 8px;
       color: var(--text);
-      font-size: 0.95rem;
+      font-size: 1rem;
       font-family: inherit;
       outline: none;
       transition: border-color 0.2s;
     }
-    .waitlist-form input:focus { border-color: var(--accent); }
-    .waitlist-form input::placeholder { color: var(--muted); }
-    .waitlist-form button { padding: 12px 24px; white-space: nowrap; }
-    .form-note {
-      margin-top: 14px;
-      font-size: 0.78rem;
-      color: var(--muted);
+
+    .waitlist-form input[type="email"]::placeholder { color: var(--muted); }
+
+    .waitlist-form input[type="email"]:focus {
+      border-color: var(--accent);
     }
-    #form-success {
+
+    .waitlist-form button {
+      background: var(--accent);
+      color: var(--bg);
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+
+    .waitlist-form button:hover { opacity: 0.85; }
+
+    .waitlist-note {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-top: 16px;
+    }
+
+    .waitlist-success {
       display: none;
+      background: var(--accent-dim);
+      border: 1px solid rgba(0, 212, 170, 0.3);
       color: var(--accent);
-      font-size: 0.95rem;
-      margin-top: 12px;
+      padding: 16px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      margin-top: 24px;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* CTA BAND */
+    .cta-band {
+      text-align: center;
+      padding: 100px 24px;
+      position: relative;
+    }
+
+    .cta-band::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(0, 212, 170, 0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-band h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    .cta-band p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      margin-bottom: 36px;
+      position: relative;
     }
 
     /* FOOTER */
     footer {
-      padding: 40px 24px;
       border-top: 1px solid var(--border);
-      text-align: center;
+      padding: 48px 24px 32px;
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 32px;
+    }
+
+    .footer-brand p {
       color: var(--muted);
-      font-size: 0.82rem;
-    }
-    footer .footer-logo { font-weight: 700; color: var(--text); margin-bottom: 8px; }
-    footer .footer-logo span { color: var(--accent); }
-
-    /* RESPONSIVE */
-    @media (max-width: 640px) {
-      nav { padding: 14px 20px; }
-      nav ul { gap: 16px; }
-      section { padding: 70px 20px; }
-      .hero { padding: 100px 20px 60px; }
-      .problem-stats { gap: 24px; padding: 24px; }
-      .demo-body { font-size: 0.72rem; padding: 16px; }
+      font-size: 0.9rem;
+      margin-top: 12px;
+      max-width: 280px;
+      line-height: 1.6;
     }
 
-    /* SCROLL REVEAL */
-    .reveal {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
+    .footer-links {
+      display: flex;
+      gap: 64px;
+      flex-wrap: wrap;
     }
-    .reveal.visible {
+
+    .footer-links-group h4 {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .footer-links-group ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-links-group ul li a {
+      color: var(--text);
+      font-size: 0.9rem;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .footer-links-group ul li a:hover {
       opacity: 1;
-      transform: translateY(0);
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-bottom p {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .footer-bottom-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-bottom-links a {
+      color: var(--muted);
+      font-size: 0.85rem;
+      transition: color 0.2s;
+    }
+
+    .footer-bottom-links a:hover {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* RESPONSIVE NAV */
+    @media (max-width: 768px) {
+      nav { padding: 14px 20px; }
+      nav ul { gap: 20px; }
+      .logo span { display: none; }
+      section { padding: 72px 20px; }
+      #how-it-works { padding: 56px 24px; }
+    }
+
+    @media (max-width: 480px) {
+      nav ul li:not(.nav-cta) { display: none; }
     }
   </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <div class="logo">Grey<span>Box</span></div>
-  <ul>
-    <li><a href="#problem">Problem</a></li>
-    <li><a href="#solution">Solution</a></li>
-    <li><a href="#demo">Demo</a></li>
-    <li><a href="#waitlist">Join Waitlist</a></li>
-  </ul>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-badge"><span class="dot"></span> Audit Layer for AI Agents</div>
-  <h1>
-    Agents are black boxes.<br>
-    <span class="line-accent">We fix that.</span>
-  </h1>
-  <p>As AI agents handle money, logistics, and relationships — opacity isn't acceptable. GreyBox gives operators and agents a clear view of every decision, every action, every reason why.</p>
-  <div class="hero-actions">
-    <a href="#waitlist" class="btn-primary">
-      Join the Waitlist
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </a>
-    <a href="#demo" class="btn-secondary">See the Demo</a>
-  </div>
-</section>
-
-<!-- PROBLEM -->
-<section id="problem">
-  <div class="container">
-    <span class="section-label reveal">The Problem</span>
-    <h2 class="section-title reveal">When agents run the show,<br>you can't afford a black box.</h2>
-    <p class="section-desc reveal">Agents are increasingly making — and acting on — high-stakes decisions. But traditional observability tools were built for deterministic systems. Agents require something new.</p>
-
-    <div class="problem-grid reveal">
-      <div class="problem-card">
-        <div class="problem-icon">🔒</div>
-        <h3>Opacity by Default</h3>
-        <p>LLM-based agents don't produce logs. They produce outputs. The reasoning, context, and chain of decisions that led to an action are lost the moment the response returns.</p>
+  <!-- NAV -->
+  <nav>
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
       </div>
-      <div class="problem-card">
-        <div class="problem-icon">⚖️</div>
-        <h3> accountability Gap</h3>
-        <p>When an agent approves a transaction, denies a claim, or escalates a case — can you explain why? In regulated industries, "the AI did it" isn't an audit trail.</p>
-      </div>
-      <div class="problem-card">
-        <div class="problem-icon">🤖</div>
-        <h3>Agents Can't Explain Themselves</h3>
-        <p>Current agents optimize for correct outputs, not explainable ones. Asking "why did you do that?" typically returns post-hoc rationalization, not real reasoning.</p>
-      </div>
-      <div class="problem-card">
-        <div class="problem-icon">🔁</div>
-        <h3>Debugging a Closed Box</h3>
-        <p>When something goes wrong, you need to reproduce the agent's context — its memory, tool calls, prior decisions. Without an audit layer, you're starting from zero.</p>
+      Agent Audit Trail
+    </div>
+    <ul>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how-it-works">How It Works</a></li>
+      <li><a href="#waitlist" class="nav-cta">Join Waitlist</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div>
+      <div class="hero-badge"><span></span>Early Access Open</div>
+      <h1>Your agents made a decision.<br><span class="accent">Can you explain it?</span></h1>
+      <p>Agent Audit Trail gives you full visibility into what your AI agents did, why, and what they saw — before something goes wrong.</p>
+      <div class="hero-actions">
+        <a href="#waitlist" class="btn-primary">
+          Join the Waitlist
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#how-it-works" class="btn-secondary">
+          See How It Works
+        </a>
       </div>
     </div>
+    <div class="scroll-hint">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      Scroll
+    </div>
+  </section>
 
-    <div class="problem-stats reveal">
-      <div>
-        <div class="stat-num">73%</div>
-        <div class="stat-label">of enterprise AI projects stall due to explainability concerns</div>
-      </div>
-      <div>
-        <div class="stat-num">$4.4M</div>
-        <div class="stat-label">average cost of an AI-related audit failure</div>
-      </div>
-      <div>
-        <div class="stat-num">2026</div>
-        <div class="stat-label">the year agents start handling real money and real decisions</div>
-      </div>
+  <!-- LOGOS -->
+  <div class="logos">
+    <p>Trusted by teams building in</p>
+    <div class="logo-row">
+      <span class="logo-item">Finance</span>
+      <span class="logo-item">Healthcare</span>
+      <span class="logo-item">Legal</span>
+      <span class="logo-item">Compliance</span>
+      <span class="logo-item">Logistics</span>
     </div>
   </div>
-</section>
 
-<!-- SOLUTION -->
-<section id="solution" class="solution">
-  <div class="container">
-    <span class="section-label reveal">The Solution</span>
-    <h2 class="section-title reveal">Every decision. Every action.<br>Every reason why.</h2>
-    <p class="section-desc reveal">GreyBox instruments your agents to produce a complete, queryable audit trail — with explanations, context, and a visualization layer operators can actually use.</p>
+  <!-- FEATURES -->
+  <section id="features">
+    <p class="section-label">What You Get</p>
+    <h2 class="section-title">Real answers, not debug logs</h2>
+    <p class="section-subtitle">Agent Audit Trail isn't another observability dashboard. It's the accountability infrastructure your agents are missing.</p>
 
-    <div class="solution-grid reveal">
-      <div class="solution-card">
-        <div class="solution-num">1</div>
-        <h3>Decision Logging</h3>
-        <p>Every agent action — tool calls, external API requests, final decisions — is captured with full input/output context, timestamps, and attribution. Immutable. Complete.</p>
-      </div>
-      <div class="solution-card">
-        <div class="solution-num">2</div>
-        <h3>Explanation Layer</h3>
-        <p>Each decision comes annotated with why the agent made that call: the chain of thought, the context it weighed, the policies it applied. Not post-hoc. Built-in.</p>
-      </div>
-      <div class="solution-card">
-        <div class="solution-num">3</div>
-        <h3>Visualization Dashboard</h3>
-        <p>A timeline view of agent behavior. Decision trees. Risk flags. Searchable audit logs. Your compliance team will actually enjoy this.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- DEMO -->
-<section id="demo">
-  <div class="container" style="text-align:center">
-    <span class="section-label reveal">What It Looks Like</span>
-    <h2 class="section-title reveal">The audit trail, in practice.</h2>
-    <p class="section-desc reveal" style="margin:0 auto 40px">Here's what GreyBox captures and presents when an agent makes a decision. This is a live-format sample — actual output, not a mockup.</p>
-
-    <div class="demo-window reveal" style="margin:0 auto;text-align:left">
-      <div class="demo-bar">
-        <div class="dot-red"></div>
-        <div class="dot-yellow"></div>
-        <div class="dot-green"></div>
-        <span class="demo-title">greybox — audit-log — order-bot / session #jk-4821</span>
-      </div>
-      <div class="demo-body">
-        <div class="demo-line"><span class="demo-linenum">1</span><span class="demo-comment"># GreyBox Audit Log — Return Authorization Agent</span></div>
-        <div class="demo-line"><span class="demo-linenum">2</span><span class="demo-comment"># Session: order-bot / #jk-4821 / 2026-03-21 03:42:17 ET</span></div>
-        <div class="demo-divider">──────────────────────────────────────────────────────────</div>
-        <div class="demo-line">
-          <span class="demo-linenum">3</span>
-          <span class="demo-variable">Agent:</span> <span class="demo-value">OrderBot-3</span>
-          <span class="demo-tag tag-approve">ACTION: APPROVE_RETURN</span>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         </div>
-        <div class="demo-line"><span class="demo-linenum">4</span><span class="demo-keyword">  timestamp:</span> <span class="demo-string">2026-03-21 03:42:17.084 ET</span></div>
-        <div class="demo-line"><span class="demo-linenum">5</span><span class="demo-keyword">  order_id:</span> <span class="demo-string">#8821</span> &nbsp;<span class="demo-keyword">customer_id:</span> <span class="demo-string">#4419</span> &nbsp;<span class="demo-keyword">policy:</span> <span class="demo-string">v2.1</span></div>
-        <div class="demo-divider">──────────────────────────────────────────────────────────</div>
-        <div class="demo-line"><span class="demo-linenum">6</span><span class="demo-variable">  Reasoning:</span></div>
-        <div class="demo-line"><span class="demo-linenum">7</span><span class="demo-comment">  │ Customer tier=gold → eligible for 30-day window (standard: 14-day)</span></div>
-        <div class="demo-line"><span class="demo-linenum">8</span><span class="demo-comment">  │ Item age=12 days (within policy window ✓)</span></div>
-        <div class="demo-line"><span class="demo-linenum">9</span><span class="demo-comment">  │ No prior returns in 90 days (customer history: clean ✓)</span></div>
-        <div class="demo-line"><span class="demo-linenum">10</span><span class="demo-comment">  │ Refund amount=$143.00 below $500 threshold (✓)</span></div>
-        <div class="demo-line"><span class="demo-linenum">11</span><span class="demo-comment">  │ All policy conditions met → APPROVE</span></div>
-        <div class="demo-divider">──────────────────────────────────────────────────────────</div>
-        <div class="demo-line"><span class="demo-linenum">12</span><span class="demo-variable">  Confidence:</span> <span class="demo-success">0.94</span> &nbsp;<span class="demo-variable">Risk:</span> <span class="demo-tag tag-info">LOW</span></div>
-        <div class="demo-line"><span class="demo-linenum">13</span><span class="demo-variable">  Flags:</span> <span class="demo-comment">none</span></div>
-        <div class="demo-divider">──────────────────────────────────────────────────────────</div>
-        <div class="demo-line"><span class="demo-linenum">14</span><span class="demo-variable">  ToolCalls:</span></div>
-        <div class="demo-line"><span class="demo-linenum">15</span><span class="demo-comment">  ├─ get_customer_tier(id=#4419) → gold</span></div>
-        <div class="demo-line"><span class="demo-linenum">16</span><span class="demo-comment">  ├─ check_return_window(order_id=#8821) → 12 days elapsed</span></div>
-        <div class="demo-line"><span class="demo-linenum">17</span><span class="demo-comment">  ├─ lookup_policy(tier=gold, type=return) → window: 30d, cap: $500</span></div>
-        <div class="demo-line"><span class="demo-linenum">18</span><span class="demo-comment">  └─ get_return_history(customer_id=#4419) → 0 returns / 90d</span></div>
-        <div class="demo-divider">──────────────────────────────────────────────────────────</div>
-        <div class="demo-line"><span class="demo-linenum">19</span><span class="demo-variable">  Query this session:</span> <span class="demo-tag tag-query">greybox query --session #jk-4821 --explain</span></div>
+        <h3>Decision Logs</h3>
+        <p>Every agent decision captured with timestamp, inputs, outputs, and the full context window that informed it. No guesswork.</p>
       </div>
-    </div>
 
-    <div style="margin-top:28px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap" class="reveal">
-      <div style="padding:12px 20px; background:var(--surface); border:1px solid var(--border); border-radius:8px; text-align:center">
-        <div style="font-size:1.4rem;font-weight:700;color:var(--accent)">0.3ms</div>
-        <div style="font-size:0.78rem;color:var(--muted)">avg. logging overhead</div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        </div>
+        <h3>Context Snapshots</h3>
+        <p>Exact state of everything the agent saw at decision time — memory, tool results, prior messages, external data. Full replay capability.</p>
       </div>
-      <div style="padding:12px 20px; background:var(--surface); border:1px solid var(--border); border-radius:8px; text-align:center">
-        <div style="font-size:1.4rem;font-weight:700;color:var(--accent)">100%</div>
-        <div style="font-size:0.78rem;color:var(--muted)">decision coverage</div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h3>Chain-of-Thought Provenance</h3>
+        <p>Trace the reasoning chain that led to each decision. Not just what the agent did, but what it considered and rejected along the way.</p>
       </div>
-      <div style="padding:12px 20px; background:var(--surface); border:1px solid var(--border); border-radius:8px; text-align:center">
-        <div style="font-size:1.4rem;font-weight:700;color:var(--accent)">SOC2</div>
-        <div style="font-size:0.78rem;color:var(--muted)">audit ready</div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <h3>Compliance-Ready Exports</h3>
+        <p>GDPR subject-access reports, EU AI Act Article 11 documentation, regulatory submissions — exportable in formats your compliance team actually needs.</p>
       </div>
     </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <div id="how-it-works">
+    <section style="padding: 0; max-width: 100%;">
+      <p class="section-label">How It Works</p>
+      <h2 class="section-title">Three steps to full transparency</h2>
+      <p class="section-subtitle">Integrate once. Get answers forever.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">01</div>
+          <h3>Integrate the SDK</h3>
+          <p>Two lines of code to add the Agent Audit Trail layer to your existing agent pipeline. Works with LangGraph, AutoGen, CrewAI, and custom frameworks.</p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">02</div>
+          <h3>Agents Log Automatically</h3>
+          <p>Every decision, every tool call, every context fetch — captured automatically. No manual instrumentation required.</p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">03</div>
+          <h3>Query, Replay, Export</h3>
+          <p>Search your audit trail by decision outcome, time range, or agent ID. Replay any decision in full context. Export for compliance.</p>
+        </div>
+      </div>
+    </section>
   </div>
-</section>
 
-<!-- HOW IT WORKS -->
-<section id="how">
-  <div class="container">
-    <div style="text-align:center">
-      <span class="section-label reveal">How It Works</span>
-      <h2 class="section-title reveal">Three steps to full transparency.</h2>
-      <p class="section-desc reveal" style="margin:0 auto 56px">Integrate in minutes. Gain visibility forever.</p>
+  <!-- PAIN -->
+  <section id="pain">
+    <p class="section-label">The Problem</p>
+    <h2 class="section-title">Agents are in production.<br>Audit trails are not.</h2>
+    <p class="section-subtitle">The teams most likely to need accountability infrastructure are the same teams that can't have black boxes.</p>
+
+    <div class="pain-grid">
+      <div class="pain-col no">
+        <h3>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          Without Agent Audit Trail
+        </h3>
+        <ul>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            "Why did the agent approve that?"
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Can't respond to GDPR subject-access requests
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            EU AI Act Article 11 gap — no documentation
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Debugging agent failures at 2am with no data
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Enterprise customers ask for audit UI — nothing to give them
+          </li>
+        </ul>
+      </div>
+
+      <div class="pain-col yes">
+        <h3>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          With Agent Audit Trail
+        </h3>
+        <ul>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Full decision replay with context — in seconds
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Automated GDPR export for any agent interaction
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            EU AI Act Article 11 compliance package built-in
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Decision logs, context snapshots, full replay
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Shareable audit views with enterprise customers
+          </li>
+        </ul>
+      </div>
     </div>
-    <div class="steps reveal">
-      <div class="step">
-        <div class="step-icon">🔌</div>
-        <div class="step-num">Step 1</div>
-        <h3>Integrate</h3>
-        <p>Drop in the GreyBox SDK. One line of code to instrument your agent. Supports Python, Node.js, and HTTP proxy mode.</p>
-      </div>
-      <div class="step">
-        <div class="step-icon">📡</div>
-        <div class="step-num">Step 2</div>
-        <h3>Capture</h3>
-        <p>Every agent action, tool call, memory read, and decision is logged in real-time. Zero sampling. Full fidelity.</p>
-      </div>
-      <div class="step">
-        <div class="step-icon">🔍</div>
-        <div class="step-num">Step 3</div>
-        <h3>Query</h3>
-        <p>Ask any question about agent behavior. "Why did this agent deny this claim?" "What did it do between 2–3am?" Get answers, not logs.</p>
-      </div>
-    </div>
-  </div>
-</section>
+  </section>
 
-<!-- WAITLIST -->
-<section id="waitlist" class="cta-section">
-  <div class="container">
-    <span class="section-label reveal">Early Access</span>
-    <h2 class="section-title reveal">Get in the box before<br>everyone else.</h2>
-    <p class="section-desc reveal" style="margin:0 auto">We're onboarding a limited set of design partners in Q2 2026. Operators deploying agents in finance, logistics, compliance, and healthcare get priority.</p>
+  <!-- WAITLIST -->
+  <section id="waitlist">
+    <p class="section-label">Early Access</p>
+    <h2 class="section-title">AI agents are running your business.<br>Can you explain their decisions?</h2>
+    <p class="section-subtitle">We're building in the open. Early access is limited — join the waitlist to get first access and shape the product.</p>
 
-    <form class="waitlist-form reveal" id="waitlist-form" onsubmit="handleSubmit(event)">
-      <input type="email" name="email" placeholder="you@company.com" required autocomplete="email">
-      <button type="submit" class="btn-primary">Request Access</button>
+    <form class="waitlist-form" id="waitlistForm">
+      <input type="email" placeholder="you@company.com" required id="emailInput" name="email">
+      <button type="submit">Join the Waitlist</button>
     </form>
-    <p id="form-success">✓ You're on the list. We'll be in touch.</p>
-    <p class="form-note reveal">No spam. No pitch decks. Just early access when we're ready for you.</p>
-  </div>
-</section>
+    <p class="waitlist-note">No spam. No pitch decks. Just access when we're ready.</p>
+    <div class="waitlist-success" id="waitlistSuccess">
+      You're on the list. We'll be in touch.
+    </div>
+  </section>
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-logo">Grey<span>Box</span></div>
-  <p>See inside the box.</p>
-  <p style="margin-top:12px;color:var(--border)">© 2026 GreyBox. All rights reserved.</p>
-</footer>
+  <!-- CTA BAND -->
+  <section class="cta-band">
+    <h2>Accountability infrastructure<br>for the age of AI agents</h2>
+    <p>The gap is real. The timing is now. The tool doesn't exist yet — except we're building it.</p>
+    <a href="#waitlist" class="btn-primary">Join the Waitlist</a>
+  </section>
 
-<script>
-  // Scroll reveal
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="logo">
+            <div class="logo-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                <path d="M2 17l10 5 10-5"/>
+                <path d="M2 12l10 5 10-5"/>
+              </svg>
+            </div>
+            Agent Audit Trail
+          </div>
+          <p>Transparency and accountability infrastructure for AI agents in production.</p>
+        </div>
+
+        <div class="footer-links">
+          <div class="footer-links-group">
+            <h4>Product</h4>
+            <ul>
+              <li><a href="#features">Features</a></li>
+              <li><a href="#how-it-works">How It Works</a></li>
+              <li><a href="#waitlist">Early Access</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-links-group">
+            <h4>Company</h4>
+            <ul>
+              <li><a href="mailto:hello@auditlayer.com">Contact</a></li>
+              <li><a href="https://auditlayer.com" target="_blank">auditlayer.com</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-links-group">
+            <h4>Legal</h4>
+            <ul>
+              <li><a href="#">Privacy Policy</a></li>
+              <li><a href="#">Terms of Service</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 Agent Audit Trail. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="mailto:hello@auditlayer.com">hello@auditlayer.com</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('waitlistForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var email = document.getElementById('emailInput').value;
+      document.getElementById('waitlistForm').style.display = 'none';
+      document.querySelector('.waitlist-note').style.display = 'none';
+      var success = document.getElementById('waitlistSuccess');
+      success.style.display = 'block';
+      // mailto fallback
+      window.location.href = 'mailto:hello@auditlayer.com?subject=Waitlist Signup&body=Email: ' + encodeURIComponent(email);
     });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-  // Waitlist form (Netlify Forms / static)
-  function handleSubmit(e) {
-    e.preventDefault();
-    const form = document.getElementById('waitlist-form');
-    const success = document.getElementById('form-success');
-    const email = form.querySelector('input[name="email"]').value;
-
-    // For static hosting, submit to Netlify Forms or alert
-    const formData = new FormData();
-    formData.append('email', email);
-    formData.append('form-name', 'waitlist');
-
-    fetch('/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams(formData).toString()
-    }).catch(() => {});
-
-    form.style.display = 'none';
-    success.style.display = 'block';
-  }
-</script>
-
-<!-- Netlify Forms detection -->
-<form name="waitlist" netlify netlify-honeypot="bot-field" hidden>
-  <input type="email" name="email">
-</form>
+  </script>
 
 </body>
 </html>
